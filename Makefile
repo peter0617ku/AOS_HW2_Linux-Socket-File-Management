@@ -28,4 +28,8 @@ all: $(OBJECT)
 clean:
 	rm *.o
 	rm */*.exe
-
+ter:
+	$(NEW_TERMINAL)
+	$(NEW_TERMINAL)
+	$(NEW_TERMINAL)
+	
