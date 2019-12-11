@@ -1,6 +1,7 @@
 #define CLIENT_SOCKET(PORT,STUDENT_ID,STUDENT_NUM) \
 	int serverSocket, newSocket, nBytes;\
 	int nCount;\
+	int conflag=1;\
 	char buffer[1024];\
 	struct sockaddr_in serverAddr;\
 	struct sockaddr_storage serverStorage;\
@@ -28,14 +29,17 @@
 	while(1)\
 	{\
 		newSocket = accept(serverSocket, (struct sockaddr *) &serverStorage, &addr_size);\
-		printf("Student" #STUDENT_NUM " CONNECTION\n");\
+		if(conflag==1){\
+			printf("Student" #STUDENT_NUM " CONNECTION\n");\
+			conflag=0;\
+		}\
 		while(1)\
 		{\
-			puts("---------------------------------------");\
 			nBytes = recv(newSocket,buffer,1024,0);\
 			str_token(buffer,action,file,mode);\
 			if(strcmp(action,"create")==0)\
 			{\
+				puts("---------------------------------------");\
 				printf("[Student" #STUDENT_NUM "--%s]:\n",action);\
 				FILE *fp = fopen(file, "wb");\
 				if(fp == NULL)\
@@ -104,6 +108,8 @@
 				if(search_ans[0]=='2' || search_ans[0]=='0')\
 				{\
 					send(newSocket,"20",3,0);\
+					puts("---------------------------------------");\
+					printf("[Student" #STUDENT_NUM "--%s]:\n",action);\
 					puts("Permission denied");\
 					continue;\
 				}\
@@ -112,8 +118,10 @@
 					send(newSocket,"21",3,0);\
 				}\
 				mutex_read_lock(file);\
+				puts("---------------------------------------");\
 				printf("[Student" #STUDENT_NUM "--%s]:\n",action);\
 				puts("Data Transfering...");\
+				sleep(10);\
 				FILE *fp = fopen(file, "rb");\
 				if(fp == NULL)\
 				{\
@@ -124,7 +132,6 @@
 				{\
 					send(newSocket, buffer, nCount, 0);\
 				}\
-				sleep(10);\
 				fclose(fp);\
 				puts("File transfer success!");\
 				mutex_read_unlock(file);\
@@ -144,15 +151,22 @@
 				}\
 				nBytes = recv(newSocket,buffer,1024,0);\
 				if(buffer[0]=='0')\
+				{\
+					puts("---------------------------------------");\
+					printf("[Student" #STUDENT_NUM "--%s]:\n",action);\
 					puts("You don't have this file...OK~~Got it.");\
+				}\
 				else if(buffer[0]=='1')\
 				{\
 					if(search_ans[0]=='2' || search_ans[1]=='0')\
 					{\
+						puts("---------------------------------------");\
+						printf("[Student" #STUDENT_NUM "--%s]:\n",action);\
 						puts("Permission denied");\
 						continue;\
 					}\
 					mutex_write_lock(file);\
+					puts("---------------------------------------");\
 					printf("[Student" #STUDENT_NUM "--%s]:\n",action);\
 					puts("Data receiveing...");\
 					if(mode[0]=='a')\
@@ -193,6 +207,7 @@
 			}\
 			else if(strcmp(action,"changemode")==0)\
 			{\
+				puts("---------------------------------------");\
 				printf("[Student" #STUDENT_NUM "--%s]:\n",action);\
 				send(newSocket,"4",2,0);\
 				search_ans=search(student[STUDENT_ID],file);\
@@ -311,6 +326,7 @@
 			}\
 			else if(strcmp(action,"bye")==0)\
 			{\
+				puts("---------------------------------------");\
 				printf("[Student" #STUDENT_NUM "--%s]:\n",action);\
 				printf("Bye~~\n");\
 				close(newSocket);\
@@ -319,6 +335,7 @@
 			}\
 			else\
 			{\
+				puts("---------------------------------------");\
 				printf("[Student" #STUDENT_NUM "--%s]:\n",action);\
 				printf("No instruction\n");\
 				send(newSocket,"5",2,0);\
