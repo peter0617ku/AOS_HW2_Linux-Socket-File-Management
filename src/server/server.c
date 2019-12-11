@@ -1,27 +1,27 @@
 #include "server.h"
 #include "socket.h"
 
-void* client2()
+void* server2()
 {
 	CLIENT_SOCKET(7892,1,2);
 	pthread_exit(NULL);
 }
-void* client3()
+void* server3()
 {
 	CLIENT_SOCKET(7893,2,3);
 	pthread_exit(NULL);
 }
-void* client4()
+void* server4()
 {
 	CLIENT_SOCKET(7894,3,4);
 	pthread_exit(NULL);
 }
-void* client5()
+void* server5()
 {
 	CLIENT_SOCKET(7895,4,5);
 	pthread_exit(NULL);
 }
-void* client6()
+void* server6()
 {
 	CLIENT_SOCKET(7896,5,6);
 	pthread_exit(NULL);
@@ -31,6 +31,7 @@ int main()
 {
 	int serverSocket, newSocket, nBytes;
 	int nCount;
+	int conflag=1;
 	char buffer[1024];
 	struct sockaddr_in serverAddr;
 	struct sockaddr_storage serverStorage;
@@ -41,34 +42,24 @@ int main()
 	char mode[ARRAY_SIZE];
 	char* search_ans;
 	char* owner_ans;
-	pthread_t c2,c3,c4,c5,c6;
+	pthread_t t2,t3,t4,t5,t6;
 	
 	file_num=0;
 	/*Initailize Capability list*/
 	puts("Initailizing Capability list...");
-	student[0] = ini(student[0],"student1","groupA");
-	student[1] = ini(student[1],"student2","groupA");
-	student[2] = ini(student[2],"student3","groupA");
-	student[3] = ini(student[3],"student4","groupB");
-	student[4] = ini(student[4],"student5","groupB");
-	student[5] = ini(student[5],"student6","groupB");
+	student[0] = ini( student[0] , "student1" , "groupA" );
+	student[1] = ini( student[1] , "student2" , "groupA" );
+	student[2] = ini( student[2] , "student3" , "groupA" );
+	student[3] = ini( student[3] , "student4" , "groupB" );
+	student[4] = ini( student[4] , "student5" , "groupB" );
+	student[5] = ini( student[5] , "student6" , "groupB" );
 	puts("Initailize Capability list: [Done]");
 	
-	/*puts("Initailizing mutexs...");
-	MUTEX_INITIALIZE(mutex_read1);
-	MUTEX_INITIALIZE(mutex_read2);
-	MUTEX_INITIALIZE(mutex_read3);
-	MUTEX_INITIALIZE(mutex_read4);
-	MUTEX_INITIALIZE(mutex_read5);
-	MUTEX_INITIALIZE(mutex_read6);
-	MUTEX_INITIALIZE(mutex_write);
-	puts("Initailize mutexs: [Done]");*/
-	
-	pthread_create(&c2,NULL,client2,NULL);
-	pthread_create(&c3,NULL,client3,NULL);
-	pthread_create(&c4,NULL,client4,NULL);
-	pthread_create(&c5,NULL,client5,NULL);
-	pthread_create(&c6,NULL,client6,NULL);
+	pthread_create( &t2 , NULL , server2 , NULL );
+	pthread_create( &t3 , NULL , server3 , NULL );
+	pthread_create( &t4 , NULL , server4 , NULL );
+	pthread_create( &t5 , NULL , server5 , NULL );
+	pthread_create( &t6 , NULL , server6 , NULL );
 	
 	serverSocket = socket(PF_INET, SOCK_STREAM, 0);//插上插座
 	
@@ -90,14 +81,17 @@ int main()
 	{
 		newSocket = accept(serverSocket, (struct sockaddr *) &serverStorage, &addr_size);//接受連線->聽client說話
 		/*Client已連線，執行以下的程式碼*/
-		puts("Student1 CONNECTION");
+		if(conflag==1){
+			puts("Student1 CONNECTION");
+			conflag=0;
+		}
 		while(1)
 		{//連線中利用while loop連續處理字串接收
-			puts("---------------------------------------");
-			nBytes = recv(newSocket,buffer,1024,0);//接收client傳來的資料
+			nBytes = recv(newSocket,buffer,1024,0);//接收client傳來的instruction
 			str_token(buffer,action,file,mode);//切token
 			if(strcmp(action,"create")==0)
 			{
+				puts("---------------------------------------");
 				printf("[Student1--%s]:\n",action);
 				FILE *fp = fopen(file, "wb");//create a new file
 				if(fp == NULL)
@@ -174,6 +168,8 @@ int main()
 				if(search_ans[0]=='2' || search_ans[0]=='0')
 				{
 					send(newSocket,"20",3,0);/*Client cannot write the file (The file does not exist or permisssion denied)*/
+					printf("[Student1--%s]:\n",action);
+					puts("Data Transfering...");
 					puts("Permission denied");
 					continue;
 				}
@@ -183,19 +179,21 @@ int main()
 				}
 				
 				mutex_read_lock(file);/*lock*/
+				puts("---------------------------------------");
 				printf("[Student1--%s]:\n",action);
 				puts("Data Transfering...");
+				sleep(10);
 				FILE *fp = fopen(file, "rb");  //create a new file
 				if(fp == NULL)
 				{
 					puts("Cannot find this file!");
 					exit(0);
 				}
+				
 				while( (nCount = fread(buffer, 1, 1024, fp)) > 0 )//讀檔
 				{
 					send(newSocket, buffer, nCount, 0);//傳送檔案
 				}
-				sleep(10);
 				fclose(fp);
 				puts("File transfer success!");
 				
@@ -215,18 +213,25 @@ int main()
 				{
 					send(newSocket,"31",3,0);/*Client can write the file (And capability list have this right)*/
 				}
-				nBytes = recv(newSocket,buffer,1024,0);
+				nBytes = recv(newSocket,buffer,1024,0);/*Client tell server whether it has this file*/
 				if(buffer[0]=='0')
+				{
+					puts("---------------------------------------");
+					printf("[Student1--%s]:\n",action);
 					puts("You don't have this file...OK~~Got it.");
+				}
 				else if(buffer[0]=='1')
 				{
 					if(search_ans[0]=='2' || search_ans[1]=='0')
 					{
+						puts("---------------------------------------");
+						printf("[Student1--%s]:\n",action);
 						puts("Permission denied");
 						continue;
 					}
 					
 					mutex_write_lock(file);/*lock*/
+					puts("---------------------------------------");
 					printf("[Student1--%s]:\n",action);
 					puts("Data receiveing...");
 					/*Append mode*/
@@ -272,6 +277,7 @@ int main()
 			}/*end of if*/
 			else if(strcmp(action,"changemode")==0)
 			{
+				puts("---------------------------------------");
 				printf("[Student1--%s]:\n",action);
 				send(newSocket,"4",2,0);/*tell client: the action is changemode(4)*/
 				
@@ -280,16 +286,6 @@ int main()
 				if(search_ans[0]=='2')
 				{
 					puts("Sorry! You don't have this file...");
-					/*if(mode[0]=='r' && mode[1]=='w')
-						student[0]=insert(student[0],file,1,1);
-					else if(mode[0]=='r')
-						student[0]=insert(student[0],file,1,0);
-					else if(mode[1]=='w')
-						student[0]=insert(student[0],file,0,1);
-					else if(mode[0]=='-' && mode[1]=='-')
-						;
-					else
-						puts("Right???");*/
 				}
 				/*file in the list*/
 				else
@@ -419,6 +415,7 @@ int main()
 			}/*end of if*/
 			else if(strcmp(action,"bye")==0)
 			{
+				puts("---------------------------------------");
 				printf("[Student1--%s]:\n",action);
 				printf("Bye~~\n");
 				close(newSocket);
@@ -427,6 +424,7 @@ int main()
 			}/*end of else*/
 			else
 			{
+				puts("---------------------------------------");
 				printf("[Student1--%s]:\n",action);
 				printf("No instruction\n");
 				send(newSocket,"5",2,0);/*tell client: the action is NO instruction(5)*/
