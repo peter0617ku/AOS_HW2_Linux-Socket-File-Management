@@ -32,8 +32,8 @@ int main(){
 		nBytes = strlen(buffer) + 1;
 		send(clientSocket,buffer,nBytes,0);//對server講話
 		
-		printf("action:%s\n",action);
-		printf("file:%s\n",file);
+		printf("action:%s | ",action);
+		printf("file:%s | ",file);
 		printf("mode:%s\n",mode);
 		
 		nBytes = recv(clientSocket,buffer,1024,0);//接收server傳來的資料
@@ -76,12 +76,12 @@ int main(){
 			{
 				/*Client does not have this file*/
 				puts("Cannot find this file!");
-				send(clientSocket,"0",2,0);//對server講話
+				send(clientSocket,"0",2,0);/*Client tell server whether it has this file: NO!!!*/
 				continue;
 				//exit(0);
 			}
 
-			send(clientSocket,"1",2,0);
+			send(clientSocket,"1",2,0);/*Client tell server whether it has this file: Yes!!!*/
 			if(buffer[1]=='0')
 			{
 				puts("[Server] You cannot write");
@@ -92,10 +92,10 @@ int main(){
 				/*Client have this file*/
 				puts("File transfering...");
 				int nCount;
+				sleep(10);
 				while( (nCount = fread(buffer, 1, 1024, fp)) > 0 ){//讀檔
 					send(clientSocket, buffer, nCount, 0);//傳送檔案
 				}
-				sleep(10);
 				puts("File transfer success!");//傳送＆寫檔成功
 				fclose(fp);//關閉file descriptor
 				close(clientSocket);
