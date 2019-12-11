@@ -12,6 +12,7 @@ if (pthread_mutex_init(&MUTEX, NULL) != 0){\
 	exit(1);\
 }\
 
+/*Node of file list*/
 typedef struct file_node
 {
 	char file_name[ARRAY_SIZE];
