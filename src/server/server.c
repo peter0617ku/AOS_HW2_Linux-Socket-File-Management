@@ -48,26 +48,10 @@ void server1()
 	char mode[ARRAY_SIZE];
 	char* search_ans;
 	char* owner_ans;
-	pthread_t t2,t3,t4,t5,t6;
 	
 	file_num=0;
-	/*Initailize Capability list*/
-	puts("Initailizing Capability list...");
-	student[0] = ini( student[0] , "student1" , "groupA" );
-	student[1] = ini( student[1] , "student2" , "groupA" );
-	student[2] = ini( student[2] , "student3" , "groupA" );
-	student[3] = ini( student[3] , "student4" , "groupB" );
-	student[4] = ini( student[4] , "student5" , "groupB" );
-	student[5] = ini( student[5] , "student6" , "groupB" );
-	puts("Initailize Capability list: [Done]");
 	
-	pthread_create( &t2 , NULL , server2 , NULL );
-	pthread_create( &t3 , NULL , server3 , NULL );
-	pthread_create( &t4 , NULL , server4 , NULL );
-	pthread_create( &t5 , NULL , server5 , NULL );
-	pthread_create( &t6 , NULL , server6 , NULL );
-	
-	serverSocket = socket(PF_INET, SOCK_STREAM, 0);//插上插座
+	serverSocket = socket(AF_INET, SOCK_STREAM, 0);//插上插座
 	
 	serverAddr.sin_family = AF_INET;//TCP本機傳輸
 	serverAddr.sin_port = htons(7891);//設定port
@@ -441,6 +425,24 @@ void server1()
 }
 int main()
 {
+	pthread_t t2,t3,t4,t5,t6;
+	/*Initailize Capability list */
+	puts("Initailizing Capability list...");
+	student[0] = ini( student[0] , "student1" , "groupA" );
+	student[1] = ini( student[1] , "student2" , "groupA" );
+	student[2] = ini( student[2] , "student3" , "groupA" );
+	student[3] = ini( student[3] , "student4" , "groupB" );
+	student[4] = ini( student[4] , "student5" , "groupB" );
+	student[5] = ini( student[5] , "student6" , "groupB" );
+	puts("Initailize Capability list: [Done]");
+	
+	/*Start each thread */
+	pthread_create( &t2 , NULL , server2 , NULL );
+	pthread_create( &t3 , NULL , server3 , NULL );
+	pthread_create( &t4 , NULL , server4 , NULL );
+	pthread_create( &t5 , NULL , server5 , NULL );
+	pthread_create( &t6 , NULL , server6 , NULL );
 	server1();
+	
 	return 0;
 }

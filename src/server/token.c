@@ -4,8 +4,6 @@
 #define str_copy(x) \
 	strncpy(x,string+z-i,i2);\
 	s++;
-		
-//memset(x,'\0',sizeof(x));
 
 /*Function that cuts instruction into tokens*/
 void str_token(const char* string, char a1[],char a2[],char a3[])

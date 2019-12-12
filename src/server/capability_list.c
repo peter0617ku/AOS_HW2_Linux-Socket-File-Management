@@ -44,7 +44,7 @@ TOP change_right(TOP a,char file[],int read,int write)
 {
 	int find=0;
 	NODE* search = a.top;
-	NODE* prenode=a.top;
+	NODE* prenode = a.top;
 	if(a.top==NULL) puts("Capability list is empty. Please check!!");
 	else
 	{
