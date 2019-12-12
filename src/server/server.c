@@ -1,33 +1,39 @@
 #include "server.h"
 #include "socket.h"
 
+/*Multi-thread: handle 6 client connections.*/
+/*Student2 server*/
 void* server2()
 {
 	CLIENT_SOCKET(7892,1,2);
 	pthread_exit(NULL);
 }
+/*Student3 server*/
 void* server3()
 {
 	CLIENT_SOCKET(7893,2,3);
 	pthread_exit(NULL);
 }
+/*Student4 server*/
 void* server4()
 {
 	CLIENT_SOCKET(7894,3,4);
 	pthread_exit(NULL);
 }
+/*Student5 server*/
 void* server5()
 {
 	CLIENT_SOCKET(7895,4,5);
 	pthread_exit(NULL);
 }
+/*Student6 server*/
 void* server6()
 {
 	CLIENT_SOCKET(7896,5,6);
 	pthread_exit(NULL);
 }
-
-int main()
+/*Student1 server*/
+void server1()
 {
 	int serverSocket, newSocket, nBytes;
 	int nCount;
@@ -432,5 +438,9 @@ int main()
 		}/*End of while*/
 		close(newSocket);//關閉socket連線並等待下一個連線->掛電話
 	}
+}
+int main()
+{
+	server1();
 	return 0;
 }
