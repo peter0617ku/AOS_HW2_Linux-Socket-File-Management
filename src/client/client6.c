@@ -14,9 +14,9 @@ int main(){
 	char file[ARRAY_SIZE];
 	char mode[ARRAY_SIZE];
 
-	clientSocket = socket(AF_INET, SOCK_STREAM, 0);//插上插座
+	clientSocket = socket(AF_INET, SOCK_STREAM, 0);//插上插座(IPv4,  TCP)
 
-	serverAddr.sin_family = AF_INET;//TCP本機連線
+	serverAddr.sin_family = AF_INET;//IPv4
 	serverAddr.sin_port = htons(7896);//設定port
 	serverAddr.sin_addr.s_addr = inet_addr("127.0.0.1");//設定IP
 	memset(serverAddr.sin_zero, '\0', sizeof serverAddr.sin_zero);  
