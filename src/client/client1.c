@@ -22,8 +22,12 @@ int main(){
 	memset(serverAddr.sin_zero, '\0', sizeof serverAddr.sin_zero);  
 
 	addr_size = sizeof serverAddr;
-	connect(clientSocket, (struct sockaddr *) &serverAddr, addr_size);//撥號碼 打給server
-
+	if(connect(clientSocket, (struct sockaddr *) &serverAddr, addr_size) == -1)//撥號碼 打給server
+	{
+		puts("Connection Error.");
+		exit(0);
+	}
+	
 	while(1){
 		printf("What do you want to do (create/read/write/changemode/bye): ____________________\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b");
 		fgets(buffer,1024,stdin);
@@ -39,7 +43,17 @@ int main(){
 		nBytes = recv(clientSocket,buffer,1024,0);//接收server傳來的資料
 		//printf("receive: %s\n",buffer);
 		
-		if(buffer[0]=='2')
+		if(buffer[0]=='1')
+		{
+			nBytes = recv(clientSocket,buffer,1024,0);//接收server傳來的資料
+			if(buffer[0]=='1')
+				puts("[Server] Wrong format.");
+			else if(buffer[0]=='2')
+				puts("[Server] Create Success.");
+			else if(buffer[0]=='3')
+				puts("[Server] Already have this file.");
+		}
+		else if(buffer[0]=='2')
 		{
 			FILE *fp = fopen(file, "wb");  //開啟接收的檔案
 			if(fp == NULL)
@@ -50,11 +64,13 @@ int main(){
 			
 			if(buffer[1]=='0')
 			{
-				puts("You cannot read");
+				puts("[Server] You cannot read");
 				fclose(fp);
 			}
 			else if(buffer[1]=='1')	
 			{
+				puts("Waiting...");
+				nBytes = recv(clientSocket,buffer,1024,0);//server calls client to receive file
 				puts("File recieving...");
 				int nCount;
 				while( (nCount = recv(clientSocket, buffer, 1024, 0)) > 0 )//接收資料
@@ -90,6 +106,8 @@ int main(){
 			else if(buffer[1]=='1')	
 			{
 				/*Client have this file*/
+				puts("Waiting...");
+				nBytes = recv(clientSocket,buffer,1024,0);//server calls client to send file
 				puts("File transfering...");
 				int nCount;
 				sleep(10);
@@ -103,6 +121,20 @@ int main(){
 				clientSocket = socket(AF_INET, SOCK_STREAM, 0);
 				connect(clientSocket, (struct sockaddr *) &serverAddr, addr_size);
 			}
+		}
+		else if(buffer[0]=='4')
+		{
+			nBytes = recv(clientSocket,buffer,1024,0);//接收server傳來的資料
+			if(buffer[0]=='1')
+				puts("[Server] Sorry! You don't have permission to access the file...");
+			else if(buffer[0]=='2')
+				puts("[Server] Sorry! You are not the owner of the file.");
+			else if(buffer[0]=='3'||buffer[0]=='6')
+				puts("[Server] Right set wrong.");
+			else if(buffer[0]=='4')
+				puts("[Server] If you do this, you will no longer have permission to this file.");
+			else if(buffer[0]=='5')
+				puts("[Server] changemode success.");
 		}
 		else if(buffer[0]=='5')
 		{
