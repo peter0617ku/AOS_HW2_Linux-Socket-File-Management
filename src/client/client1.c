@@ -64,7 +64,7 @@ int main(){
 				puts("File receive success!");//傳送＆寫檔成功
 				fclose(fp);//關閉file descriptor
 				close(clientSocket);
-				clientSocket = socket(PF_INET, SOCK_STREAM, 0);
+				clientSocket = socket(AF_INET, SOCK_STREAM, 0);
 				connect(clientSocket, (struct sockaddr *) &serverAddr, addr_size);
 			}
 			
@@ -100,7 +100,7 @@ int main(){
 				puts("File transfer success!");//傳送＆寫檔成功
 				fclose(fp);//關閉file descriptor
 				close(clientSocket);
-				clientSocket = socket(PF_INET, SOCK_STREAM, 0);
+				clientSocket = socket(AF_INET, SOCK_STREAM, 0);
 				connect(clientSocket, (struct sockaddr *) &serverAddr, addr_size);
 			}
 		}
@@ -114,7 +114,6 @@ int main(){
 			close(clientSocket);
 			exit(0);
 		}
-		
 	}
 
 	return 0;
