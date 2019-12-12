@@ -471,12 +471,12 @@ int main()
 	pthread_t t2,t3,t4,t5,t6;
 	/*Initailize Capability list */
 	puts("Initailizing Capability list...");
-	student[0] = ini( student[0] , "student1" , "groupA" );
-	student[1] = ini( student[1] , "student2" , "groupA" );
-	student[2] = ini( student[2] , "student3" , "groupA" );
-	student[3] = ini( student[3] , "student4" , "groupB" );
-	student[4] = ini( student[4] , "student5" , "groupB" );
-	student[5] = ini( student[5] , "student6" , "groupB" );
+	student[0] = initialize( student[0] , "student1" , "groupA" );
+	student[1] = initialize( student[1] , "student2" , "groupA" );
+	student[2] = initialize( student[2] , "student3" , "groupA" );
+	student[3] = initialize( student[3] , "student4" , "groupB" );
+	student[4] = initialize( student[4] , "student5" , "groupB" );
+	student[5] = initialize( student[5] , "student6" , "groupB" );
 	puts("Initailize Capability list: [Done]");
 	
 	/*Start each thread */

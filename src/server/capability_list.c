@@ -1,7 +1,7 @@
 #include "server.h"
 
 /*capability list -> Initialization*/
-TOP ini(TOP a,char name[], char group[])
+TOP initialize(TOP a,char name[], char group[])
 {
 	strcpy(a.owner,name);
 	strcpy(a.group,group);
