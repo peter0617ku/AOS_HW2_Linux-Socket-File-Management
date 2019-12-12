@@ -12,30 +12,6 @@ if (pthread_mutex_init(&MUTEX, NULL) != 0){\
 	exit(1);\
 }\
 
-typedef struct file_node
-{
-	char file_name[ARRAY_SIZE];
-	int mutex_read;
-	int mutex_write;
-}FNODE;
-
-/*Global variable*/
-FNODE file_list[100];
-int file_num;
-int same[6];
-int fi[6];
-
-
-
-/*7 mutex (6 read mutex + 1 write mutex)
-pthread_mutex_t mutex_read1;
-pthread_mutex_t mutex_read2;
-pthread_mutex_t mutex_read3;
-pthread_mutex_t mutex_read4;
-pthread_mutex_t mutex_read5;
-pthread_mutex_t mutex_read6;
-pthread_mutex_t mutex_write;*/
-
 /*node of capability list*/
 typedef struct node
 {
@@ -55,7 +31,19 @@ typedef struct top_node
 	char group[ARRAY_SIZE];/*owner group*/
 	NODE* top;/*pointer: top*/
 }TOP;
+/*Node of file list*/
+typedef struct file_node
+{
+	char file_name[ARRAY_SIZE];
+	int mutex_read;
+	int mutex_write;
+}FNODE;
 
+/*Global variable*/
+FNODE file_list[100];
+int file_num;
+int same[6];
+int fi[6];
 /*6 capability list*/
 TOP student[6];
 
