@@ -51,5 +51,5 @@ void print_list(TOP a);
 char* search(TOP a,char file[]);
 TOP change_right(TOP a,char file[],int read,int write);
 TOP insert(int x,TOP a,char file[],char file_owner[],int read ,int write);
-TOP ini(TOP a,char name[], char group[]);
+TOP initialize(TOP a,char name[], char group[]);
 char* search_owner(TOP a,char file[]);
