@@ -49,15 +49,15 @@ TOP student[6];
 
 /*Function prototype -- capability_list.c*/
 TOP initialize(TOP a,char name[], char group[]);
-TOP insert(int x,TOP a,char file[],char file_owner[],int read ,int write);
+TOP insert(int x,TOP a,char file[],const char file_owner[],int read ,int write);
 TOP change_right(TOP a,char file[],int read,int write);
 char* search(TOP a,char file[]);
 char* search_owner(TOP a,char file[]);
 void print_list(TOP a);
 /*Function prototype -- file_mutex.c*/
-void mutex_read_lock(char s[]);
-void mutex_read_unlock(char s[]);
-void mutex_write_lock(char s[]);
-void mutex_write_unlock(char s[]);
-int if_exist(char s[]);
+void mutex_read_lock(char fileName[]);
+void mutex_read_unlock(char fileName[]);
+void mutex_write_lock(char fileName[]);
+void mutex_write_unlock(char fileName[]);
+int if_exist(char fileName[]);
 

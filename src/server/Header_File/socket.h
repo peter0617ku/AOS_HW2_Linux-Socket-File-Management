@@ -74,7 +74,7 @@
 						send(newSocket,"1",2,0);\
 						continue;\
 					}\
-					if(same[0]==0)\
+					if(same[STUDENT_ID]==0)\
 					{\
 						for(int i=0;i<6;i++)\
 						{\
@@ -168,7 +168,7 @@
 			}\
 			else if(strcmp(action,"write")==0)\
 			{\
-				search_ans=search(student[0],file);\
+				search_ans=search(student[STUDENT_ID],file);\
 				if(search_ans[0]=='2' || search_ans[1]=='0')\
 				{\
 					send(newSocket,"30",3,0);\
