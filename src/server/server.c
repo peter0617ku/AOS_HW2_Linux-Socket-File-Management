@@ -1,7 +1,7 @@
 /****************************************************************************
 *Name: 古孟平
 *Student ID:M083040024
-*Function: Program for processing data transfer using multithread in socket (server)
+*Function:Implement data transfer programs using socket and multithread techniques (server)
 *Date: 2019/12/19
 *
 ****************************************************************************/
