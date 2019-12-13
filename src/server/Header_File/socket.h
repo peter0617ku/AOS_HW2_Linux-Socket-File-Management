@@ -1,3 +1,11 @@
+/****************************************************************************
+*Name: 古孟平
+*Student ID:M083040024
+*Function: Header file on the server side program -- Macro for multithread server
+*Date: 2019/12/19
+*
+****************************************************************************/
+
 #define CLIENT_SOCKET(PORT,STUDENT_ID,STUDENT_NUM) \
 	int serverSocket, newSocket, nBytes;\
 	int nCount;\

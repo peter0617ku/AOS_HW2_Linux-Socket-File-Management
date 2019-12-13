@@ -1,3 +1,11 @@
+/****************************************************************************
+*Name: 古孟平
+*Student ID:M083040024
+*Function: Header file on the server side program
+*Date: 2019/12/19
+*
+****************************************************************************/
+
 #include <stdio.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
