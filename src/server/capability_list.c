@@ -9,7 +9,7 @@ TOP initialize(TOP a,char name[], char group[])
 	return a;
 }
 /*capability list -> insertion*/
-TOP insert(int x,TOP a,char file[],char file_owner[],int read ,int write)
+TOP insert(int x,TOP a,char file[],const char file_owner[],int read ,int write)
 {
 	same[x]=0;
 	/*Check whether the list have this file*/
@@ -17,7 +17,10 @@ TOP insert(int x,TOP a,char file[],char file_owner[],int read ,int write)
 		same[x]=if_exist(file);
 	fi[x]=1;
 	if(same[x]==1)
+	{
 		puts("INFO: [Already have this file.]");
+		return a;
+	}
 	else
 	{
 		/*Create a new node*/
@@ -57,11 +60,12 @@ TOP change_right(TOP a,char file[],int read,int write)
 				/*Delete node if read and write are false*/
 				if(search->read == 0 && search->write == 0)
 				{
-					if(search->next!=NULL) prenode->next=search->next;
-					else
-					{		
-						if(search==a.top) a.top=NULL;
-						else prenode->next=NULL;
+					//first node delete error
+					if(prenode->next == NULL) a.top=NULL;
+					else 
+					{
+						if(search==a.top)a.top=search->next;
+						else prenode->next=search->next;
 					}
 					free(search);
 				}
@@ -96,21 +100,23 @@ char* search(TOP a,char file[])
 	return "22";
 }
 /*capability list -> search node*/
-char* search_owner(TOP a,char file[])
+char* search_owner(const TOP a,char file[])
 {
 	NODE* search = a.top;
+	char* str;
 	while(search != NULL)
 	{
 		if(strcmp(search->file_name,file)==0)
 		{
-			return search->file_owner;
+			str=strdup(search->file_owner);
+			return str;
 		}
 		else search = search->next;
 	}
 	return "";
 }
 /*capability list -> print each node*/
-void print_list(TOP a)
+void print_list(const TOP a)
 {
 	NODE* ptr=a.top;
 	printf("name: %s ",a.owner);
@@ -120,7 +126,7 @@ void print_list(TOP a)
 	{
 		while(ptr!=NULL)
 		{
-			printf(" => <%s,{%d,%d}>",ptr->file_name,ptr->read,ptr->write);
+			printf(" => <%s(%c),{%d,%d}>",ptr->file_name,ptr->file_owner[7],ptr->read,ptr->write);
 			ptr=ptr->next;
 		}
 		puts("");
