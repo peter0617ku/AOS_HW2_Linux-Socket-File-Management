@@ -1,3 +1,11 @@
+/****************************************************************************
+*Name: 古孟平
+*Student ID:M083040024
+*Function: Program for file search and implement file mutex
+*Date: 2019/12/19
+*
+****************************************************************************/
+
 #include "server.h"
 
 /*Take 1 read key if no one is writing the file*/

@@ -1,3 +1,11 @@
+/****************************************************************************
+*Name: 古孟平
+*Student ID:M083040024
+*Function: Program for processing data transfer using multithread in socket (server)
+*Date: 2019/12/19
+*
+****************************************************************************/
+
 #include "server.h"
 #include "socket.h"
 
@@ -203,11 +211,8 @@ void server1()
 					puts("Cannot find this file!");
 					exit(0);
 				}
-				
 				while( (nCount = fread(buffer, 1, 1024, fp)) > 0 )//讀檔
-				{
 					send(newSocket, buffer, nCount, 0);//傳送檔案
-				}
 				fclose(fp);
 				puts("File transfer success!");
 				
@@ -260,9 +265,8 @@ void server1()
 							exit(0);
 						}
 						int nCount;
-						while( (nCount = recv(newSocket,buffer,1024,0)) > 0 ){//接收資料
+						while( (nCount = recv(newSocket,buffer,1024,0)) > 0 )//接收資料
 							fwrite(buffer, nCount, 1, fp);//將接收到的資料存進file中
-						}
 						puts("File receive success!");//傳送＆寫檔成功
 						fclose(fp);
 						
@@ -279,9 +283,8 @@ void server1()
 							exit(0);
 						}
 						int nCount;
-						while( (nCount = recv(newSocket,buffer,1024,0)) > 0 ){//接收資料
+						while( (nCount = recv(newSocket,buffer,1024,0)) > 0 )//接收資料
 							fwrite(buffer, nCount, 1, fp);//將接收到的資料存進file中
-						}
 						puts("File receive success!");//傳送＆寫檔成功
 						fclose(fp);
 						
@@ -372,7 +375,6 @@ void server1()
 												send(newSocket,"6",2,0);
 												break;
 											}
-											
 										}
 										/*file in the list*/
 										else
