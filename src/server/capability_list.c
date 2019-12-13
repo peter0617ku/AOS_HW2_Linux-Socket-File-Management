@@ -68,7 +68,6 @@ TOP change_right(TOP a,char file[],int read,int write)
 				/*Delete node if read and write are false*/
 				if(search->read == 0 && search->write == 0)
 				{
-					//first node delete error
 					if(prenode->next == NULL) a.top=NULL;
 					else 
 					{
