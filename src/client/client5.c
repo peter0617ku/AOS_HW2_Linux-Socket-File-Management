@@ -1,3 +1,11 @@
+/****************************************************************************
+*Name: 古孟平
+*Student ID:M083040024
+*Function: Program for processing data transfer using multithread in socket (client5)
+*Date: 2019/12/19
+*
+****************************************************************************/
+
 #include <stdio.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
