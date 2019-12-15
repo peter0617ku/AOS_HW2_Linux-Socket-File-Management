@@ -43,6 +43,7 @@ typedef struct top_node
 typedef struct file_node
 {
 	char file_name[ARRAY_SIZE];
+	char file_owner[ARRAY_SIZE] ;
 	int mutex_read;
 	int mutex_write;
 }FNODE;
@@ -60,7 +61,7 @@ TOP initialize(TOP a,char name[], char group[]);
 TOP insert(int x,TOP a,char file[],const char file_owner[],int read ,int write);
 TOP change_right(TOP a,char file[],int read,int write);
 char* search(TOP a,char file[]);
-char* search_owner(TOP a,char file[]);
+char* search_owner(char file[]);
 void print_list(TOP a);
 /*Function prototype -- file_mutex.c*/
 void mutex_read_lock(char fileName[]);
