@@ -54,7 +54,9 @@ int main(){
 		if(buffer[0]=='1')
 		{
 			nBytes = recv(clientSocket,buffer,1024,0);//接收server傳來的資料
-			if(buffer[0]=='1')
+			if(buffer[0]=='0')
+				puts("[Server] You will no access right!");
+			else if(buffer[0]=='1')
 				puts("[Server] Wrong format.");
 			else if(buffer[0]=='2')
 				puts("[Server] Create Success.");
