@@ -184,6 +184,7 @@ void* server1()
 								strcpy(file_list[file_num].file_owner,student[0].owner);
 								file_list[file_num].mutex_read=6;
 								file_list[file_num].mutex_write=1;
+								pthread_mutex_init(&(file_list[file_num].mutex),NULL);
 								file_num++;
 							}
 						}

@@ -15,8 +15,10 @@ void mutex_read_lock(char fileName[])
 	{
 		if(strcmp(file_list[i].file_name , fileName)==0)
 		{
+			pthread_mutex_lock(&(file_list[i].mutex));
 			while(file_list[i].mutex_write != 1);/*If someone is writing the file*/
 			file_list[i].mutex_read--;
+			pthread_mutex_unlock(&(file_list[i].mutex));
 			break;
 		}
 	}
@@ -40,10 +42,12 @@ void mutex_write_lock(char fileName[])
 	{
 		if(strcmp(file_list[i].file_name , fileName)==0)
 		{
+			pthread_mutex_lock(&(file_list[i].mutex));
 			while(file_list[i].mutex_read != 6);/*If someone is reading the file*/
 			file_list[i].mutex_read=0;
 			while(file_list[i].mutex_write != 1);/*If someone is writing the file*/
 			file_list[i].mutex_write--;
+			pthread_mutex_unlock(&(file_list[i].mutex));
 			break;
 		}
 	}
