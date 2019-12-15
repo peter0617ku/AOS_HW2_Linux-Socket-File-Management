@@ -46,6 +46,7 @@ typedef struct file_node
 	char file_owner[ARRAY_SIZE] ;
 	int mutex_read;
 	int mutex_write;
+	pthread_mutex_t mutex;
 }FNODE;
 
 /*Global variable*/
