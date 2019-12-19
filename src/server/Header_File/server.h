@@ -18,7 +18,7 @@
 #define MUTEX_INITIALIZE(MUTEX) \
 if (pthread_mutex_init(&MUTEX, NULL) != 0){\
 	exit(1);\
-}\
+}
 
 /*node of capability list*/
 typedef struct node
@@ -62,7 +62,6 @@ TOP initialize(TOP a,char name[], char group[]);
 TOP insert(int x,TOP a,char file[],const char file_owner[],int read ,int write);
 TOP change_right(TOP a,char file[],int read,int write);
 char* search(TOP a,char file[]);
-char* search_owner(char file[]);
 void print_list(TOP a);
 /*Function prototype -- file_mutex.c*/
 void mutex_read_lock(char fileName[]);
@@ -70,4 +69,5 @@ void mutex_read_unlock(char fileName[]);
 void mutex_write_lock(char fileName[]);
 void mutex_write_unlock(char fileName[]);
 int if_exist(char fileName[]);
+char* search_owner(char file[]);
 

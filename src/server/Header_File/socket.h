@@ -255,158 +255,155 @@
 				printf("[Student" #STUDENT_NUM "--%s]:\n",action);\
 				send(newSocket,"4",2,0);\
 				sleep(0.2);\
-					owner_ans=search_owner(file);\
-					if(strcmp(owner_ans , student[STUDENT_ID].owner)!=0)\
+				owner_ans=search_owner(file);\
+				if(strcmp(owner_ans , student[STUDENT_ID].owner)!=0)\
+				{\
+					puts("Sorry! You are not the owner of the file.");\
+					send(newSocket,"2",2,0);\
+				}\
+				else\
+				{\
+					if(strlen(mode)<6)\
 					{\
-						puts("Sorry! You are not the owner of the file.");\
-						send(newSocket,"2",2,0);\
+						puts("[Server] Right set wrong.");\
+						send(newSocket,"3",2,0);\
 					}\
 					else\
 					{\
-						if(strlen(mode)<6)\
+						search_ans=search(student[0],file);\
+						if(search_ans[STUDENT_ID]=='2')\
 						{\
-							puts("[Server] Right set wrong.");\
-							send(newSocket,"3",2,0);\
-						}\
-						else\
-						{\
-							search_ans=search(student[0],file);\
-							if(search_ans[STUDENT_ID]=='2')\
+							if(mode[0]=='r' && mode[1]=='w')\
+								student[STUDENT_ID]=insert(STUDENT_ID,student[STUDENT_ID],file,student[STUDENT_ID].owner,1,1);\
+							else if(mode[0]=='r' && mode[1]=='-')\
+								student[STUDENT_ID]=insert(STUDENT_ID,student[STUDENT_ID],file,student[STUDENT_ID].owner,1,0);\
+							else if(mode[0]=='-' && mode[1]=='w')\
+								student[STUDENT_ID]=insert(STUDENT_ID,student[STUDENT_ID],file,student[STUDENT_ID].owner,0,1);\
+							else if(mode[0]=='-' && mode[1]=='-')\
 							{\
-								if(mode[0]=='r' && mode[1]=='w')\
-									student[STUDENT_ID]=insert(STUDENT_ID,student[STUDENT_ID],file,student[STUDENT_ID].owner,1,1);\
-								else if(mode[0]=='r' && mode[1]=='-')\
-									student[STUDENT_ID]=insert(STUDENT_ID,student[STUDENT_ID],file,student[STUDENT_ID].owner,1,0);\
-								else if(mode[0]=='-' && mode[1]=='w')\
-									student[STUDENT_ID]=insert(STUDENT_ID,student[STUDENT_ID],file,student[STUDENT_ID].owner,0,1);\
-								else if(mode[0]=='-' && mode[1]=='-')\
-								{\
-									;\
-								}\
-								else\
-								{\
-									puts("[Server] Right set wrong.");\
-									send(newSocket,"6",2,0);\
-									continue;\
-								}\
+								;\
 							}\
 							else\
 							{\
-								if(mode[0]=='r' && mode[1]=='w')\
-									student[STUDENT_ID]=change_right(student[STUDENT_ID],file,1,1);\
-								else if(mode[0]=='r' && mode[1]=='-')\
-									student[STUDENT_ID]=change_right(student[STUDENT_ID],file,1,0);\
-								else if(mode[0]=='-' && mode[1]=='w')\
-									student[STUDENT_ID]=change_right(student[STUDENT_ID],file,0,1);\
-								else if(mode[0]=='-' && mode[1]=='-')\
-								{\
-									student[STUDENT_ID]=change_right(student[STUDENT_ID],file,0,0);\
-								}\
-								else\
-								{\
-									puts("[Server] Right set wrong.");\
-									send(newSocket,"6",2,0);\
-									continue;\
-								}\
+								puts("[Server] Right set wrong.");\
+								send(newSocket,"6",2,0);\
+								continue;\
 							}\
-							for(int i=0;i<6;i++)\
+						}\
+						else\
+						{\
+							if(mode[0]=='r' && mode[1]=='w')\
+								student[STUDENT_ID]=change_right(student[STUDENT_ID],file,1,1);\
+							else if(mode[0]=='r' && mode[1]=='-')\
+								student[STUDENT_ID]=change_right(student[STUDENT_ID],file,1,0);\
+							else if(mode[0]=='-' && mode[1]=='w')\
+								student[STUDENT_ID]=change_right(student[STUDENT_ID],file,0,1);\
+							else if(mode[0]=='-' && mode[1]=='-')\
+								student[STUDENT_ID]=change_right(student[STUDENT_ID],file,0,0);\
+							else\
 							{\
-								if(i==STUDENT_ID)continue;\
-								else\
+								puts("[Server] Right set wrong.");\
+								send(newSocket,"6",2,0);\
+								continue;\
+							}\
+						}\
+						for(int i=0;i<6;i++)\
+						{\
+							if(i==STUDENT_ID)continue;\
+							else\
+							{\
+								search_ans=search(student[i],file);\
+								if(strcmp(student[i].group,student[STUDENT_ID].group)==0)\
 								{\
-									search_ans=search(student[i],file);\
-									if(strcmp(student[i].group,student[STUDENT_ID].group)==0)\
+									if(search_ans[0]=='2')\
 									{\
-										if(search_ans[0]=='2')\
-										{\
-											if(mode[2]=='r' && mode[3]=='w')\
-												student[i]=insert(STUDENT_ID,student[i],file,owner_ans,1,1);\
-											else if(mode[2]=='r' && mode[3]=='-')\
-												student[i]=insert(STUDENT_ID,student[i],file,owner_ans,1,0);\
-											else if(mode[2]=='-' && mode[3]=='w')\
-												student[i]=insert(STUDENT_ID,student[i],file,owner_ans,0,1);\
-											else if(mode[2]=='-' && mode[3]=='-')\
-												;\
-											else\
-											{\
-												puts("[Server] Right set wrong.");\
-												send(newSocket,"6",2,0);\
-												break;\
-											}\
-										}\
+										if(mode[2]=='r' && mode[3]=='w')\
+											student[i]=insert(STUDENT_ID,student[i],file,owner_ans,1,1);\
+										else if(mode[2]=='r' && mode[3]=='-')\
+											student[i]=insert(STUDENT_ID,student[i],file,owner_ans,1,0);\
+										else if(mode[2]=='-' && mode[3]=='w')\
+											student[i]=insert(STUDENT_ID,student[i],file,owner_ans,0,1);\
+										else if(mode[2]=='-' && mode[3]=='-')\
+											;\
 										else\
 										{\
-											if(mode[2]=='r' && mode[3]=='w')\
-												student[i]=change_right(student[i],file,1,1);\
-											else if(mode[2]=='r' && mode[3]=='-')\
-												student[i]=change_right(student[i],file,1,0);\
-											else if(mode[2]=='-' && mode[3]=='w')\
-												student[i]=change_right(student[i],file,0,1);\
-											else if(mode[2]=='-' && mode[3]=='-')\
-												student[i]=change_right(student[i],file,0,0);\
-											else\
-											{\
-												puts("[Server] Right set wrong.");\
-												send(newSocket,"6",2,0);\
-												break;\
-											}\
+											puts("[Server] Right set wrong.");\
+											send(newSocket,"6",2,0);\
+											break;\
 										}\
 									}\
 									else\
 									{\
-										if(search_ans[0]=='2')\
-										{\
-											if(mode[4]=='r' && mode[5]=='w')\
-												student[i]=insert(STUDENT_ID,student[i],file,owner_ans,1,1);\
-											else if(mode[4]=='r' && mode[5]=='-')\
-												student[i]=insert(STUDENT_ID,student[i],file,owner_ans,1,0);\
-											else if(mode[4]=='-' && mode[5]=='w')\
-												student[i]=insert(STUDENT_ID,student[i],file,owner_ans,0,1);\
-											else if(mode[4]=='-' && mode[5]=='-')\
-												;\
-											else\
-											{\
-												puts("[Server] Right set wrong.");\
-												send(newSocket,"6",2,0);\
-												break;\
-											}\
-										}\
+										if(mode[2]=='r' && mode[3]=='w')\
+											student[i]=change_right(student[i],file,1,1);\
+										else if(mode[2]=='r' && mode[3]=='-')\
+											student[i]=change_right(student[i],file,1,0);\
+										else if(mode[2]=='-' && mode[3]=='w')\
+											student[i]=change_right(student[i],file,0,1);\
+										else if(mode[2]=='-' && mode[3]=='-')\
+											student[i]=change_right(student[i],file,0,0);\
 										else\
 										{\
-											if(mode[4]=='r' && mode[5]=='w')\
-												student[i]=change_right(student[i],file,1,1);\
-											else if(mode[4]=='r' && mode[5]=='-')\
-												student[i]=change_right(student[i],file,1,0);\
-											else if(mode[4]=='-' && mode[5]=='w')\
-												student[i]=change_right(student[i],file,0,1);\
-											else if(mode[4]=='-' && mode[5]=='-')\
-												student[i]=change_right(student[i],file,0,0);\
-											else\
-											{\
-												puts("[Server] Right set wrong.");\
-												send(newSocket,"6",2,0);\
-												break;\
-											}\
+											puts("[Server] Right set wrong.");\
+											send(newSocket,"6",2,0);\
+											break;\
+										}\
+									}\
+								}\
+								else\
+								{\
+									if(search_ans[0]=='2')\
+									{\
+										if(mode[4]=='r' && mode[5]=='w')\
+											student[i]=insert(STUDENT_ID,student[i],file,owner_ans,1,1);\
+										else if(mode[4]=='r' && mode[5]=='-')\
+											student[i]=insert(STUDENT_ID,student[i],file,owner_ans,1,0);\
+										else if(mode[4]=='-' && mode[5]=='w')\
+											student[i]=insert(STUDENT_ID,student[i],file,owner_ans,0,1);\
+										else if(mode[4]=='-' && mode[5]=='-')\
+											;\
+										else\
+										{\
+											puts("[Server] Right set wrong.");\
+											send(newSocket,"6",2,0);\
+											break;\
+										}\
+									}\
+									else\
+									{\
+										if(mode[4]=='r' && mode[5]=='w')\
+											student[i]=change_right(student[i],file,1,1);\
+										else if(mode[4]=='r' && mode[5]=='-')\
+											student[i]=change_right(student[i],file,1,0);\
+										else if(mode[4]=='-' && mode[5]=='w')\
+											student[i]=change_right(student[i],file,0,1);\
+										else if(mode[4]=='-' && mode[5]=='-')\
+											student[i]=change_right(student[i],file,0,0);\
+										else\
+										{\
+											puts("[Server] Right set wrong.");\
+											send(newSocket,"6",2,0);\
+											break;\
 										}\
 									}\
 								}\
 							}\
 						}\
-						for(int i=0;i<6;i++)\
-							print_list(student[i]);\
-						printf("INFO: changemode '%s'\n",file);\
-						send(newSocket,"5",2,0);\
 					}\
-				\
+					for(int i=0;i<6;i++)\
+						print_list(student[i]);\
+					printf("INFO: changemode '%s'\n",file);\
+					send(newSocket,"5",2,0);\
+				}\
 			}\
-			else if(strcmp(action,"bye")==0)\
+			else if(strcmp(action,"close")==0)\
 			{\
 				puts("---------------------------------------");\
 				printf("[Student" #STUDENT_NUM "--%s]:\n",action);\
 				printf("Bye~~\n");\
 				close(newSocket);\
-				close(serverSocket);\
-				exit(0);\
+				conflag=1;\
+				break;\
 			}\
 			else\
 			{\
