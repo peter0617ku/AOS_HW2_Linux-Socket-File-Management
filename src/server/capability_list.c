@@ -111,16 +111,6 @@ char* search(TOP a,char file[])
 	}
 	return "22";
 }
-/*capability list -> search node*/
-char* search_owner(char file[])
-{
-	for(int i=0;i<file_num;i++)
-	{
-		if( strcmp(file_list[i].file_name,file)==0 )
-			return file_list[i].file_owner;
-	}
-	return "NULL";
-}
 /*capability list -> print each node*/
 void print_list(const TOP a)
 {

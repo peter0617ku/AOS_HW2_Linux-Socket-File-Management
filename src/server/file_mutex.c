@@ -73,3 +73,13 @@ int if_exist(char fileName[])
 			return 1;
 	return 0;
 }
+/*file list -> search node*/
+char* search_owner(char file[])
+{
+	for(int i=0;i<file_num;i++)
+	{
+		if( strcmp(file_list[i].file_name,file)==0 )
+			return file_list[i].file_owner;
+	}
+	return "NULL";
+}

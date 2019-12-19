@@ -23,7 +23,6 @@ void str_token(const char* string, char a1[],char a2[],char a3[])
 	int index=0;
 	int s=0;
 	
-	//printf("total test=%s\n",string);
 	for(int z=0;z<strlen(string);z++)
 	{
 		for(i=0;z<strlen(string);z++,i++)
@@ -40,19 +39,16 @@ void str_token(const char* string, char a1[],char a2[],char a3[])
 		{	
 			str_copy(a1);
 			a1[i2]='\0';
-			//printf("test=%d\n",i2);
 		}
 		else if(s==1)
 		{
 			str_copy(a2);
 			a2[i2]='\0';
-			//printf("test=%d,%s\n",i2,a2);
 		}
 		else if(s==2)
 		{
 			str_copy(a3);
 			a3[i2]='\0';
-			//printf("test=%d\n",i2);
 		}
 	}
 	switch(s)

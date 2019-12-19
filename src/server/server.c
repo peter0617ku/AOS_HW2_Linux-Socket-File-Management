@@ -92,8 +92,8 @@ void* server1()
 			{
 				puts("---------------------------------------");
 				printf("[Student1--%s]:\n",action);
-				
-				FILE *fp = fopen(file, "wb");//create a new file
+				/*create a new file*/
+				FILE *fp = fopen(file, "wb");
 				if(fp == NULL)
 				{
 					puts("Cannot find this file!");
@@ -120,12 +120,7 @@ void* server1()
 					else if(mode[0]=='-' && mode[1]=='w')
 						student[0]=insert(0,student[0],file,student[0].owner,0,1);
 					else if(mode[0]=='-' && mode[1]=='-')
-					{
 						student[0]=insert(0,student[0],file,student[0].owner,0,0);
-						//puts("You will no access right!");
-						//send(newSocket,"0",2,0);
-						//continue;
-					}
 					else
 					{
 						puts("[Server] Wrong format.");
@@ -189,6 +184,7 @@ void* server1()
 							}
 						}
 					}
+					/*If already have this file before (The file is in capability list)*/
 					else
 						send(newSocket,"3",2,0);	
 				}
@@ -215,7 +211,7 @@ void* server1()
 				puts("---------------------------------------");
 				printf("[Student1--%s]:\n",action);
 				puts("Data Transfering...");
-				send(newSocket,"1",2,0);
+				send(newSocket,"1",2,0);/*Send a message to notify the client to receive data*/
 				sleep(10);
 				FILE *fp = fopen(file, "rb");  //create a new file
 				if(fp == NULL)
@@ -254,6 +250,7 @@ void* server1()
 				}
 				else if(buffer[0]=='1')
 				{
+					/*If this client does not have permission to access the file*/
 					if(search_ans[0]=='2' || search_ans[1]=='0')
 					{
 						puts("---------------------------------------");
@@ -263,7 +260,7 @@ void* server1()
 					}
 					sleep(0.2);
 					mutex_write_lock(file);/*lock*/
-					send(newSocket,"1",3,0);//add a signal to client
+					send(newSocket,"1",3,0);/*Send a message to notify the client to send data*/
 					puts("---------------------------------------");
 					printf("[Student1--%s]:\n",action);
 					puts("Data receiveing...");
@@ -313,196 +310,172 @@ void* server1()
 				printf("[Student1--%s]:\n",action);
 				send(newSocket,"4",2,0);/*tell client: the action is changemode(4)*/
 				sleep(0.2);
-				//search_ans=search(student[0],file);
-				/*file is not in the list*/
-				//if(search_ans[0]=='2')
-				//{
-				//	puts("Sorry! You don't have permission to access this file...");
-				//	send(newSocket,"1",2,0);
-				//}
-				/*file in the list*/
-				//else
-				//{
-					owner_ans=search_owner(file);
-					/*If the file is not yours, you cannot change the mode of this file*/
-					if(strcmp(owner_ans , student[0].owner)!=0)
+				owner_ans=search_owner(file);
+				/*If the file is not yours, you cannot change the mode of this file*/
+				if(strcmp(owner_ans , student[0].owner)!=0)
+				{
+					puts("Sorry! You are not the owner of the file.");
+					send(newSocket,"2",2,0);
+				}
+				/*If file owner is you, you can change the mode.*/
+				else
+				{
+					/*check mode type*/
+					if(strlen(mode)<6)
 					{
-						puts("Sorry! You are not the owner of the file.");
-						send(newSocket,"2",2,0);
+						puts("[Server] Right set wrong.");
+						send(newSocket,"3",2,0);
 					}
-					/*If file owner is you, you can change the mode.*/
 					else
 					{
-						/*check mode type*/
-						if(strlen(mode)<6)
+						//add
+						search_ans=search(student[0],file);
+						/*The file is not in the capability list*/
+						if(search_ans[0]=='2')
 						{
-							puts("[Server] Right set wrong.");
-							send(newSocket,"3",2,0);
-						}
-						else
-						{
-							//add
-							search_ans=search(student[0],file);
-							if(search_ans[0]=='2')
+							if(mode[0]=='r' && mode[1]=='w')
+								student[0]=insert(0,student[0],file,student[0].owner,1,1);
+							else if(mode[0]=='r' && mode[1]=='-')
+								student[0]=insert(0,student[0],file,student[0].owner,1,0);
+							else if(mode[0]=='-' && mode[1]=='w')
+								student[0]=insert(0,student[0],file,student[0].owner,0,1);
+							else if(mode[0]=='-' && mode[1]=='-')
 							{
-								if(mode[0]=='r' && mode[1]=='w')
-									student[0]=insert(0,student[0],file,student[0].owner,1,1);
-								else if(mode[0]=='r' && mode[1]=='-')
-									student[0]=insert(0,student[0],file,student[0].owner,1,0);
-								else if(mode[0]=='-' && mode[1]=='w')
-									student[0]=insert(0,student[0],file,student[0].owner,0,1);
-								else if(mode[0]=='-' && mode[1]=='-')
-								{
-									;
-									//student[0]=change_right(student[0],file,0,0);
-									//puts("[Error] If you do this, you will no longer have permission to this file.");
-									//send(newSocket,"4",2,0);
-									//continue;
-								}
-								else
-								{
-									puts("[Server] Right set wrong.");
-									send(newSocket,"6",2,0);
-									continue;
-								}
+								;
 							}
 							else
 							{
-								if(mode[0]=='r' && mode[1]=='w')
-									student[0]=change_right(student[0],file,1,1);
-								else if(mode[0]=='r' && mode[1]=='-')
-									student[0]=change_right(student[0],file,1,0);
-								else if(mode[0]=='-' && mode[1]=='w')
-									student[0]=change_right(student[0],file,0,1);
-								else if(mode[0]=='-' && mode[1]=='-')
-								{
-									student[0]=change_right(student[0],file,0,0);
-									//student[0]=change_right(student[0],file,0,0);
-									//puts("[Error] If you do this, you will no longer have permission to this file.");
-									//send(newSocket,"4",2,0);
-									//continue;
-								}
-								else
-								{
-									puts("[Server] Right set wrong.");
-									send(newSocket,"6",2,0);
-									continue;
-								}
+								puts("[Server] Right set wrong.");
+								send(newSocket,"6",2,0);
+								continue;
 							}
-							
-							/*如果自己的capability list有，才可以改別人的list*/
-							for(int i=0;i<6;i++)
+						}
+						/*The file is already in the capability list*/
+						else
+						{
+							if(mode[0]=='r' && mode[1]=='w')
+								student[0]=change_right(student[0],file,1,1);
+							else if(mode[0]=='r' && mode[1]=='-')
+								student[0]=change_right(student[0],file,1,0);
+							else if(mode[0]=='-' && mode[1]=='w')
+								student[0]=change_right(student[0],file,0,1);
+							else if(mode[0]=='-' && mode[1]=='-')
+								student[0]=change_right(student[0],file,0,0);
+							else
 							{
-								if(i==0)continue;
-								else
+								puts("[Server] Right set wrong.");
+								send(newSocket,"6",2,0);
+								continue;
+							}
+						}
+						
+						/*如果自己的capability list有，才可以改別人的list*/
+						for(int i=0;i<6;i++)
+						{
+							if(i==0)continue;
+							else
+							{
+								search_ans=search(student[i],file);
+								/*Same group*/
+								if(strcmp(student[i].group,student[0].group)==0)
 								{
-									search_ans=search(student[i],file);
-									/*Same group*/
-									if(strcmp(student[i].group,student[0].group)==0)
+									/*file is not in the list*/
+									if(search_ans[0]=='2')
 									{
-										/*file is not in the list*/
-										if(search_ans[0]=='2')
-										{
-											if(mode[2]=='r' && mode[3]=='w')
-												student[i]=insert(0,student[i],file,owner_ans,1,1);
-											else if(mode[2]=='r' && mode[3]=='-')
-												student[i]=insert(0,student[i],file,owner_ans,1,0);
-											else if(mode[2]=='-' &&mode[3]=='w')
-												student[i]=insert(0,student[i],file,owner_ans,0,1);
-											else if(mode[2]=='-' && mode[3]=='-')
-												;
-											else
-											{
-												puts("[Server] Right set wrong.");
-												send(newSocket,"6",2,0);
-												break;
-											}
-										}
-										/*file in the list*/
+										if(mode[2]=='r' && mode[3]=='w')
+											student[i]=insert(0,student[i],file,owner_ans,1,1);
+										else if(mode[2]=='r' && mode[3]=='-')
+											student[i]=insert(0,student[i],file,owner_ans,1,0);
+										else if(mode[2]=='-' &&mode[3]=='w')
+											student[i]=insert(0,student[i],file,owner_ans,0,1);
+										else if(mode[2]=='-' && mode[3]=='-')
+											;
 										else
 										{
-											if(mode[2]=='r' && mode[3]=='w')
-												student[i]=change_right(student[i],file,1,1);
-											else if(mode[2]=='r' && mode[3]=='-')
-												student[i]=change_right(student[i],file,1,0);
-											else if(mode[2]=='-' && mode[3]=='w')
-												student[i]=change_right(student[i],file,0,1);
-											else if(mode[2]=='-' && mode[3]=='-')
-												student[i]=change_right(student[i],file,0,0);
-											else
-											{
-												puts("[Server] Right set wrong.");
-												send(newSocket,"6",2,0);
-												break;
-											}
-										}	
+											puts("[Server] Right set wrong.");
+											send(newSocket,"6",2,0);
+											break;
+										}
 									}
-									/*Other*/
+									/*file in the list*/
 									else
 									{
-										/*file is not in the list*/
-										if(search_ans[0]=='2')
-										{
-											if(mode[4]=='r' && mode[5]=='w')
-												student[i]=insert(0,student[i],file,owner_ans,1,1);
-											else if(mode[4]=='r' && mode[5]=='-')
-												student[i]=insert(0,student[i],file,owner_ans,1,0);
-											else if(mode[4]=='-' && mode[5]=='w')
-												student[i]=insert(0,student[i],file,owner_ans,0,1);
-											else if(mode[4]=='-' && mode[5]=='-')
-												;
-											else
-											{
-												puts("[Server] Right set wrong.");
-												send(newSocket,"6",2,0);
-												break;
-											}
-										}
-										/*file in the list*/
+										if(mode[2]=='r' && mode[3]=='w')
+											student[i]=change_right(student[i],file,1,1);
+										else if(mode[2]=='r' && mode[3]=='-')
+											student[i]=change_right(student[i],file,1,0);
+										else if(mode[2]=='-' && mode[3]=='w')
+											student[i]=change_right(student[i],file,0,1);
+										else if(mode[2]=='-' && mode[3]=='-')
+											student[i]=change_right(student[i],file,0,0);
 										else
 										{
-											if(mode[4]=='r' && mode[5]=='w')
-												student[i]=change_right(student[i],file,1,1);
-											else if(mode[4]=='r' && mode[5]=='-')
-												student[i]=change_right(student[i],file,1,0);
-											else if(mode[4]=='-' && mode[5]=='w')
-												student[i]=change_right(student[i],file,0,1);
-											else if(mode[4]=='-' && mode[5]=='-')
-												student[i]=change_right(student[i],file,0,0);
-											else
-											{
-												puts("[Server] Right set wrong.");
-												send(newSocket,"6",2,0);
-												break;
-											}
-										}/*end of else*/	
+											puts("[Server] Right set wrong.");
+											send(newSocket,"6",2,0);
+											break;
+										}
+									}	
+								}
+								/*Other*/
+								else
+								{
+									/*file is not in the list*/
+									if(search_ans[0]=='2')
+									{
+										if(mode[4]=='r' && mode[5]=='w')
+											student[i]=insert(0,student[i],file,owner_ans,1,1);
+										else if(mode[4]=='r' && mode[5]=='-')
+											student[i]=insert(0,student[i],file,owner_ans,1,0);
+										else if(mode[4]=='-' && mode[5]=='w')
+											student[i]=insert(0,student[i],file,owner_ans,0,1);
+										else if(mode[4]=='-' && mode[5]=='-')
+											;
+										else
+										{
+											puts("[Server] Right set wrong.");
+											send(newSocket,"6",2,0);
+											break;
+										}
+									}
+									/*file in the list*/
+									else
+									{
+										if(mode[4]=='r' && mode[5]=='w')
+											student[i]=change_right(student[i],file,1,1);
+										else if(mode[4]=='r' && mode[5]=='-')
+											student[i]=change_right(student[i],file,1,0);
+										else if(mode[4]=='-' && mode[5]=='w')
+											student[i]=change_right(student[i],file,0,1);
+										else if(mode[4]=='-' && mode[5]=='-')
+											student[i]=change_right(student[i],file,0,0);
+										else
+										{
+											puts("[Server] Right set wrong.");
+											send(newSocket,"6",2,0);
+											break;
+										}
 									}/*end of else*/	
-								}/*end of else*/
-							}/*end of for*/
-						}
-						/*Output the result of change mode action*/
-						for(int i=0;i<6;i++)
-							print_list(student[i]);
-						printf("INFO: changemode '%s'\n",file);
-						send(newSocket,"5",2,0);
-						
-						/*Add file to the file list and initailization*/
-						strcpy(file_list[file_num].file_name,file);
-						file_list[file_num].mutex_read=6;
-						file_list[file_num].mutex_write=1;
-						file_num++;
-					}/*end of else*/
-				//}/*end of else*/
+								}/*end of else*/	
+							}/*end of else*/
+						}/*end of for*/
+					}
+					/*Output the result of change mode action*/
+					for(int i=0;i<6;i++)
+						print_list(student[i]);
+					printf("INFO: changemode '%s'\n",file);
+					send(newSocket,"5",2,0);
+				}/*end of else*/
 			}/*end of if*/
-			/*******************************************Bye***********************************************************/
-			else if(strcmp(action,"bye")==0)
+			/*******************************************close***********************************************************/
+			else if(strcmp(action,"close")==0)
 			{
 				puts("---------------------------------------");
 				printf("[Student1--%s]:\n",action);
 				printf("Bye~~\n");
 				close(newSocket);
-				close(serverSocket);
-				exit(0);
+				//close(serverSocket);
+				conflag=1;
+				break;
 			}/*end of else*/
 			/*******************************************No instruction***********************************************************/
 			else
