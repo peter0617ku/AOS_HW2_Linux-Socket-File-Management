@@ -37,7 +37,7 @@ int main(){
 	}
 
 	while(1){
-		printf("What do you want to do (create/read/write/changemode/bye): ____________________\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b");
+		printf("What do you want to do (create/read/write/changemode/close): ____________________\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b");
 		fgets(buffer,1024,stdin);
 		//printf("Instruction: %s",buffer);
 		str_token(buffer,action,file,mode);
@@ -49,8 +49,8 @@ int main(){
 		printf("mode:%s\n",mode);
 		
 		nBytes = recv(clientSocket,buffer,1024,0);//接收server傳來的資料
-		//printf("receive: %s\n",buffer);
-		
+
+		/**************************************Create********************************************/
 		if(buffer[0]=='1')
 		{
 			nBytes = recv(clientSocket,buffer,1024,0);//接收server傳來的資料
@@ -63,6 +63,7 @@ int main(){
 			else if(buffer[0]=='3')
 				puts("[Server] Already have this file.");
 		}
+		/**************************************Read*********************************************/
 		else if(buffer[0]=='2')
 		{
 			FILE *fp = fopen(file, "wb");  //開啟接收的檔案
@@ -95,6 +96,7 @@ int main(){
 			}
 			
 		}
+		/**************************************Write*********************************************/
 		else if(buffer[0]=='3')
 		{
 			FILE *fp = fopen(file, "rb");  //開啟接收的檔案
@@ -131,6 +133,7 @@ int main(){
 				connect(clientSocket, (struct sockaddr *) &serverAddr, addr_size);
 			}
 		}
+		/**************************************Changemode*********************************************/
 		else if(buffer[0]=='4')
 		{
 			nBytes = recv(clientSocket,buffer,1024,0);//接收server傳來的資料
@@ -145,15 +148,13 @@ int main(){
 			else if(buffer[0]=='5')
 				puts("[Server] changemode success.");
 		}
+		/**************************************No instruction*********************************************/
 		else if(buffer[0]=='5')
 		{
 			printf("No [%s] instruction.\n",action);
-			//puts("===============================\nNo Instruction!!\nBREAK!!");
-			//close(clientSocket);
-			//clientSocket = socket(PF_INET, SOCK_STREAM, 0);
-			//connect(clientSocket, (struct sockaddr *) &serverAddr, addr_size);
 		}
-		else if(strcmp(action,"bye")==0)
+		/**************************************Close client*********************************************/
+		else if(strcmp(action,"close")==0)
 		{
 			printf("BYE~~~~~~~~~\n");
 			close(clientSocket);
