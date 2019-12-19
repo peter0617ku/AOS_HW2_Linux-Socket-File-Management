@@ -2,4 +2,4 @@
 AOS HW2
 
 # Compile
-Put all programs, header files and makefile in the same directory.
+Put all programs, header files, and makefile in the same directory.
