@@ -92,7 +92,6 @@ TOP change_right(TOP a,char file[],int read,int write)
 		}
 		if(find==0) puts("Error! The file is not in Capability list.");
 	}
-	//delete the last node
 	return a;
 }
 /*capability list -> search node*/
